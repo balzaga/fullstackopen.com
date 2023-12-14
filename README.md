@@ -1,2 +1,2 @@
-# fullstackopen.com
-Exercises for the course
+# Exercises for the course fullstackopen.com
+

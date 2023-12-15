@@ -7,7 +7,7 @@ sequenceDiagram
 
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
-    Note right of server : The server store de new note and  rediret to https://studies.cs.helsinki.fi/exampleapp/notes
+    server->>server: store de new note and  rediret to https://studies.cs.helsinki.fi/exampleapp/notes
     server-->>browser: HTML document
     deactivate server
 

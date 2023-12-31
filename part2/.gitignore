@@ -1,3 +1,7 @@
+node_modules
+part2-notes*
+part2-notes-part2-1*
+
 # Logs
 logs
 *.log
@@ -7,9 +11,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-part2-notes-part2-1
-part2-notes*
 dist
 dist-ssr
 *.local

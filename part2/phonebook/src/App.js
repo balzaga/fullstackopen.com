@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
 
 	const [persons, setPersons] = useState([])
+	const [message, setMessage] = useState(null)
+	const [typeMessage, setTypeMessage] = useState(null)
 
 	const hook = () => {
 		console.log('effect')
@@ -14,6 +17,10 @@ const App = () => {
 			.getAll()
 			.then(initialPersons => {
 				setPersons(initialPersons)
+			}).catch(error => {
+				setTypeMessage('error')
+				setMessage(`Error getting numbers '${error}'`)
+				setTimeout(() => { setMessage(null) }, 4000)
 			})
 	}
 
@@ -44,13 +51,19 @@ const App = () => {
 		if (encontrado != null) {
 			if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
 				encontrado.number = newTelephone;
-				personService.update(encontrado.id, encontrado).then(personUpdated => {
-					console.log(`'${encontrado.name}' update with ${newTelephone}`);
-					setNewName('')
-					setNewTelephone('')
-				}).catch(error => {
-					alert(`Error updating '${encontrado.name}' ${error}`)
-				})
+				personService.update(encontrado.id, encontrado)
+					.then(personUpdated => {
+						setTypeMessage('success')
+						console.log(`'${encontrado.name}' update with ${newTelephone}`);
+						setMessage(`Added '${encontrado.name}'`)
+						setTimeout(() => { setMessage(null) }, 4000)
+						setNewName('')
+						setNewTelephone('')
+					}).catch(error => {
+						setTypeMessage('error')
+						setMessage(`Error updating ${encontrado.name} '${error}'`)
+						setTimeout(() => { setMessage(null) }, 4000)
+					})
 			} else {
 				document.getElementById("name").focus()
 			}
@@ -62,9 +75,16 @@ const App = () => {
 			personService
 				.create(personObject)
 				.then(returnedPerson => {
+					setTypeMessage('success')
+					setMessage(`Added '${returnedPerson.name}'`)
+					setTimeout(() => { setMessage(null) }, 4000)
 					setPersons(persons.concat(returnedPerson))
 					setNewName('')
 					setNewTelephone('')
+				}).catch(error => {
+					setTypeMessage('error')
+					setMessage(`Error adding ${newName} '${error}'`)
+					setTimeout(() => { setMessage(null) }, 4000)
 				})
 		}
 	}
@@ -77,9 +97,15 @@ const App = () => {
 			personService.deletePerson(id)
 				.then(personJustDeleted => {
 					console.log('Person ', id, 'deleted')
+					setTypeMessage('success')
+					setMessage(`The person '${person.name}' was deleted!`)
+					setTimeout(() => { setMessage(null) }, 4000)
+
 				})
 				.catch(error => {
-					alert(`the person '${person.name}' was already deleted from server`);
+					setTypeMessage('error')
+					setMessage(`The person '${person.name}' was already deleted from server`)
+					setTimeout(() => { setMessage(null) }, 4000)
 				})
 			setPersons(persons.filter(n => n.id !== id))
 		}
@@ -109,6 +135,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			<Notification message={message} typeMessage={typeMessage} />
 			<Filter filter={filter} handleFilterChange={handleFilterChange} />
 			<h3>Add a new person</h3>
 			<PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange}

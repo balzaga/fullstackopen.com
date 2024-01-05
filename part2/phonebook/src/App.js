@@ -73,17 +73,15 @@ const App = () => {
 		const person = persons.find(p => p.id === id)
 		if (!person) {
 			alert('Person to delete not found');
-		} else {
-			if (window.confirm(`Do you really want to delete data from ${person.name}?`)) {
-				personService.deletePerson(id)
-					.then(personJustDeleted => {
-						console.log('Person ', id, 'deleted')
-					})
-					.catch(error => {
-						alert(`the person '${person.name}' was already deleted from server`);
-					})
-				setPersons(persons.filter(n => n.id !== id))
-			}
+		} else if (window.confirm(`Do you really want to delete data from ${person.name}?`)) {
+			personService.deletePerson(id)
+				.then(personJustDeleted => {
+					console.log('Person ', id, 'deleted')
+				})
+				.catch(error => {
+					alert(`the person '${person.name}' was already deleted from server`);
+				})
+			setPersons(persons.filter(n => n.id !== id))
 		}
 	}
 
